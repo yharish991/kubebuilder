@@ -2,6 +2,7 @@
     base = "docs/book"
     command = "./install-and-build.sh"
     publish = "docs/book/book"
+    functions = "docs/book/functions"
 
 # used to handle the split between v2 and v3+ download links
 [functions]
