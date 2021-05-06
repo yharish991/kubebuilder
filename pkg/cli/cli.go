@@ -75,7 +75,7 @@ type CLI struct { //nolint:maligned
 	resolvedPlugins []plugin.Plugin
 
 	// Root command.
-	cmd *cobra.Command
+	Cmd *cobra.Command
 
 	// Underlying fs
 	fs machinery.Filesystem
@@ -98,7 +98,7 @@ func New(options ...Option) (*CLI, error) {
 
 	// Build the cmd tree.
 	if err := c.buildCmd(); err != nil {
-		c.cmd.RunE = errCmdFunc(err)
+		c.Cmd.RunE = errCmdFunc(err)
 		return c, nil
 	}
 
@@ -143,7 +143,7 @@ func newCLI(options ...Option) (*CLI, error) {
 
 // buildCmd creates the underlying cobra command and stores it internally.
 func (c *CLI) buildCmd() error {
-	c.cmd = c.newRootCmd()
+	c.Cmd = c.newRootCmd()
 
 	var uve config.UnsupportedVersionError
 
@@ -235,7 +235,7 @@ func (c *CLI) getInfoFromFlags(hasConfigFile bool) error {
 	fs := pflag.NewFlagSet("base", pflag.ContinueOnError)
 
 	// Load the base command global flags
-	fs.AddFlagSet(c.cmd.PersistentFlags())
+	fs.AddFlagSet(c.Cmd.PersistentFlags())
 
 	// If we were unable to load the project configuration, we should also accept the project version flag
 	var projectVersionStr string
@@ -402,7 +402,7 @@ func (c *CLI) addSubcommands() {
 	// kubebuilder completion
 	// Only add completion if requested
 	if c.completionCommand {
-		c.cmd.AddCommand(c.newCompletionCmd())
+		c.Cmd.AddCommand(c.newCompletionCmd())
 	}
 
 	// kubebuilder create
@@ -411,31 +411,31 @@ func (c *CLI) addSubcommands() {
 	createCmd.AddCommand(c.newCreateAPICmd())
 	createCmd.AddCommand(c.newCreateWebhookCmd())
 	if createCmd.HasSubCommands() {
-		c.cmd.AddCommand(createCmd)
+		c.Cmd.AddCommand(createCmd)
 	}
 
 	// kubebuilder edit
-	c.cmd.AddCommand(c.newEditCmd())
+	c.Cmd.AddCommand(c.newEditCmd())
 
 	// kubebuilder init
-	c.cmd.AddCommand(c.newInitCmd())
+	c.Cmd.AddCommand(c.newInitCmd())
 
 	// kubebuilder version
 	// Only add version if a version string was provided
 	if c.version != "" {
-		c.cmd.AddCommand(c.newVersionCmd())
+		c.Cmd.AddCommand(c.newVersionCmd())
 	}
 }
 
 // addExtraCommands adds the additional commands.
 func (c *CLI) addExtraCommands() error {
 	for _, cmd := range c.extraCommands {
-		for _, subCmd := range c.cmd.Commands() {
+		for _, subCmd := range c.Cmd.Commands() {
 			if cmd.Name() == subCmd.Name() {
 				return fmt.Errorf("command %q already exists", cmd.Name())
 			}
 		}
-		c.cmd.AddCommand(cmd)
+		c.Cmd.AddCommand(cmd)
 	}
 	return nil
 }
@@ -460,5 +460,5 @@ func (c CLI) metadata() plugin.CLIMetadata {
 //
 // If an error is found, command help and examples will be printed.
 func (c CLI) Run() error {
-	return c.cmd.Execute()
+	return c.Cmd.Execute()
 }

@@ -196,7 +196,7 @@ plugins:
 		// Save os.Args and restore it for every test
 		var args []string
 		BeforeEach(func() {
-			c.cmd = c.newRootCmd()
+			c.Cmd = c.newRootCmd()
 
 			args = os.Args
 		})
@@ -467,7 +467,7 @@ plugins:
 					WithVersion(version),
 				)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(hasSubCommand(c.cmd, "version")).To(BeTrue())
+				Expect(hasSubCommand(c.Cmd, "version")).To(BeTrue())
 			})
 		})
 
@@ -479,7 +479,7 @@ plugins:
 					WithCompletion(),
 				)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(hasSubCommand(c.cmd, "completion")).To(BeTrue())
+				Expect(hasSubCommand(c.Cmd, "completion")).To(BeTrue())
 			})
 		})
 
@@ -525,7 +525,7 @@ plugins:
 					WithExtraCommands(extraCommand),
 				)
 				Expect(err).NotTo(HaveOccurred())
-				Expect(hasSubCommand(c.cmd, extraCommand.Use)).To(BeTrue())
+				Expect(hasSubCommand(c.Cmd, extraCommand.Use)).To(BeTrue())
 			})
 
 			It("should return an error for conflicting ones", func() {
@@ -549,7 +549,7 @@ plugins:
 				)
 				Expect(err).NotTo(HaveOccurred())
 				var alpha *cobra.Command
-				for _, subcmd := range c.cmd.Commands() {
+				for _, subcmd := range c.Cmd.Commands() {
 					if subcmd.Name() == alphaCommand {
 						alpha = subcmd
 						break

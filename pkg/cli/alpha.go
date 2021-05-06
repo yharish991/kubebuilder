@@ -52,14 +52,14 @@ Alpha subcommands are for unstable features.
 
 func (c *CLI) addAlphaCmd() {
 	if (len(alphaCommands) + len(c.extraAlphaCommands)) > 0 {
-		c.cmd.AddCommand(c.newAlphaCmd())
+		c.Cmd.AddCommand(c.newAlphaCmd())
 	}
 }
 
 func (c *CLI) addExtraAlphaCommands() error {
 	// Search for the alpha subcommand
 	var alpha *cobra.Command
-	for _, subCmd := range c.cmd.Commands() {
+	for _, subCmd := range c.Cmd.Commands() {
 		if subCmd.Name() == alphaCommand {
 			alpha = subCmd
 			break
